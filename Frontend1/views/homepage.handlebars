@@ -188,12 +188,43 @@
             0 10px 20px rgba(0,0,0,0.2);
     }
     
+    /* ============================================
+     * MODIFIED BY: Michael Yeh - Aug 8, 2024
+     * 
+     * PURPOSE: Display complete book covers without cropping
+     * 
+     * CHANGES MADE:
+     *   - Image height: 280px -> 200px (reduced to show full cover)
+     *   - Object-fit: cover -> contain (prevent image cropping)  
+     *   - Background: gradient -> #f8f9fa (light gray for consistency)
+     *   - Added padding: 10px (create space around image)
+     * 
+     * ORIGINAL CODE:
+     *   .book-card img {
+     *       width: 100%;
+     *       height: 280px;
+     *       object-fit: cover;
+     *       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+     *   }
+     * 
+     * REASON: User feedback - book covers were being cut off,
+     *         making it difficult to see complete book designs.
+     *         Team requested full cover visibility for better UX.
+     * 
+     * TESTED: Chrome, Safari, Firefox - all covers display correctly
+     * ============================================ */
+    
     .book-card img {
         width: 100%;
-        height: 280px;
-        object-fit: cover;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        height: 200px;  /* MODIFIED by Michael: was 280px - reduced for complete visibility */
+        object-fit: contain;  /* MODIFIED by Michael: was 'cover' - changed to 'contain' to show full image */
+        background: #f8f9fa;  /* MODIFIED by Michael: was gradient - changed to solid light gray */
+        padding: 10px;  /* ADDED by Michael: new property for spacing */
     }
+    
+    /* ============================================
+     * END OF MODIFICATIONS
+     * ============================================ */
     
     .book-card-content {
         padding: 2rem;
