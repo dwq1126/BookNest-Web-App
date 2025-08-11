@@ -1,0 +1,367 @@
+{{!-- Author Profile --}}
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .author-container {
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        max-width: 1000px;
+        margin: 2rem auto;
+    }
+    
+    .author-header {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 3rem;
+        margin-bottom: 3rem;
+        align-items: center;
+    }
+    
+    .author-photo {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    
+    .author-info h1 {
+        color: #1f2937;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+    
+    .author-bio {
+        color: #374151;
+        line-height: 1.7;
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .author-stats {
+        display: flex;
+        gap: 2rem;
+        margin-top: 1.5rem;
+    }
+    
+    .stat-item {
+        text-align: center;
+    }
+    
+    .stat-number {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #667eea;
+    }
+    
+    .stat-label {
+        color: #6b7280;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .books-section {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 2px solid #e5e7eb;
+    }
+    
+    .books-section h2 {
+        color: #1f2937;
+        font-size: 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .books-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+    
+    .book-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: 1px solid #e5e7eb;
+    }
+    
+    .book-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
+    
+    .book-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+    
+    .book-info {
+        padding: 1.5rem;
+    }
+    
+    .book-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+    }
+    
+    .book-category {
+        color: #667eea;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .book-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .stars {
+        color: #fbbf24;
+        font-size: 1rem;
+    }
+    
+    .rating-text {
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+    
+    .book-description {
+        color: #4b5563;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .book-actions {
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .view-details {
+        flex: 1;
+        padding: 0.75rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s;
+        text-decoration: none;
+        text-align: center;
+    }
+    
+    .view-details:hover {
+        transform: translateY(-2px);
+    }
+    
+    .price-tag {
+        padding: 0.75rem 1rem;
+        background: #f3f4f6;
+        color: #10b981;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 80px;
+    }
+    
+    .no-books {
+        text-align: center;
+        padding: 3rem;
+        color: #6b7280;
+    }
+    
+    .no-books h3 {
+        color: #374151;
+        margin-bottom: 1rem;
+    }
+    
+    .back-link {
+        display: inline-block;
+        margin-bottom: 2rem;
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+    }
+    
+    .back-link:hover {
+        color: #764ba2;
+    }
+    
+    .back-link::before {
+        content: '← ';
+        margin-right: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .author-header {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            text-align: center;
+        }
+        
+        .author-container {
+            padding: 2rem;
+            margin: 1rem;
+        }
+        
+        .author-photo {
+            height: 250px;
+        }
+        
+        .books-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .author-stats {
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="author-container">
+    <a href="javascript:history.back()" class="back-link">Back</a>
+    
+    {{!-- Author Info --}}
+    <div class="author-header">
+        <div class="author-photo-section">
+            <img src="{{author.photo}}" alt="{{author.name}}" class="author-photo">
+        </div>
+        
+        <div class="author-info">
+            <h1>{{author.name}}</h1>
+            <div class="author-bio">{{author.bio}}</div>
+            
+            <div class="author-stats">
+                <div class="stat-item">
+                    <div class="stat-number">{{books.length}}</div>
+                    <div class="stat-label">Books</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">
+                        {{#if books.length}}
+                            {{#if author.avgRating}}
+                                {{author.avgRating}}
+                            {{else}}
+                                0
+                            {{/if}}
+                        {{else}}
+                            0
+                        {{/if}}
+                    </div>
+                    <div class="stat-label">Avg Rating</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {{!-- Books --}}
+    <div class="books-section">
+        <h2>Books by {{author.name}}</h2>
+        
+        {{#if books.length}}
+            <div class="books-grid">
+                {{#each books}}
+                    <div class="book-card">
+                        <img src="{{coverUrl}}" alt="{{title}}" class="book-image">
+                        <div class="book-info">
+                            <div class="book-category">{{category}}</div>
+                            <div class="book-title">{{title}}</div>
+                            
+                            <div class="book-rating">
+                                <span class="stars">
+                                    {{#if rating}}
+                                        {{#if (gt rating 0)}}
+                                            {{#times rating}}★{{/times}}
+                                            {{#times (subtract 5 rating)}}☆{{/times}}
+                                        {{else}}
+                                            <span style="color: #9ca3af;">Not rated</span>
+                                        {{/if}}
+                                    {{else}}
+                                        <span style="color: #9ca3af;">Not rated</span>
+                                    {{/if}}
+                                </span>
+                                <span class="rating-text">({{rating}}/5)</span>
+                            </div>
+                            
+                            <div class="book-description">{{introduction}}</div>
+                            
+                            <div class="book-actions">
+                                <a href="/books/details?id={{_id}}" class="view-details">View Details</a>
+                                <div class="price-tag">¥{{price}}</div>
+                            </div>
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        {{else}}
+            <div class="no-books">
+                <h3>No books available</h3>
+                <p>This author hasn't published any books yet.</p>
+            </div>
+        {{/if}}
+    </div>
+</div>
+
+<script>
+// Add click events to all book cards
+document.querySelectorAll('.book-card').forEach(card => {
+    card.addEventListener('click', function(e) {
+        // If click is not on button or link, jump to details page
+        if (!e.target.closest('.view-details') && !e.target.closest('.price-tag')) {
+            const link = this.querySelector('.view-details');
+            if (link) {
+                window.location.href = link.href;
+            }
+        }
+    });
+    
+    // Add hover effects
+    card.addEventListener('mouseenter', function() {
+        this.style.cursor = 'pointer';
+    });
+});
+
+// Smooth scroll to top
+document.querySelector('.back-link').addEventListener('click', function(e) {
+    e.preventDefault();
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+    
+    // Delay return to let user see scroll effect
+    setTimeout(() => {
+        history.back();
+    }, 300);
+});
+</script>

@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import homeRouter from './routes/home.js';
 import bookRouter from './routes/books.js';
+import userRouter from './routes/users.js';
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -18,7 +19,40 @@ app.use(express.static(path.join(__dirname, 'public')));
 const hbs = create({
     defaultLayout: 'main',
     layoutsDir: path.join(__dirname, 'views/layouts'),
-    extname: '.handlebars'
+    extname: '.handlebars',
+    helpers: {
+        // 相等比较
+        eq: function(a, b) {
+            return a === b;
+        },
+        // 大于比较
+        gt: function(a, b) {
+            return a > b;
+        },
+        // 重复输出
+        times: function(n, block) {
+            let accum = '';
+            for (let i = 0; i < n; i++) {
+                accum += block.fn(i);
+            }
+            return accum;
+        },
+        // 减法
+        subtract: function(a, b) {
+            return a - b;
+        },
+        // 求和
+        sum: function(array, property) {
+            if (!Array.isArray(array)) return 0;
+            return array.reduce((sum, item) => {
+                return sum + (item[property] || 0);
+            }, 0);
+        },
+        // 除法
+        divide: function(a, b) {
+            return b !== 0 ? Math.round((a / b) * 10) / 10 : 0;
+        }
+    }
 });
 
 app.engine('handlebars', hbs.engine);
@@ -28,6 +62,7 @@ app.set('views', path.join(__dirname, 'views'));
 // Routes
 app.use('/', homeRouter);
 app.use('/books', bookRouter);
+app.use('/users', userRouter);
 
 // 404
 app.use((req, res) => {

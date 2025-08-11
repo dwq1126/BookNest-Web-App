@@ -1,0 +1,800 @@
+{{!-- User Profile Page --}}
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .profile-container {
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        max-width: 1200px;
+        margin: 2rem auto;
+    }
+    
+    .profile-header {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: 3rem;
+        margin-bottom: 3rem;
+        align-items: center;
+        padding-bottom: 2rem;
+        border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .avatar-section {
+        text-align: center;
+    }
+    
+    .avatar {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #667eea;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        margin-bottom: 1rem;
+    }
+    
+    .avatar-upload {
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background 0.2s;
+    }
+    
+    .avatar-upload:hover {
+        background: #5a67d8;
+    }
+    
+    .user-info h1 {
+        color: #1f2937;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        line-height: 1.2;
+    }
+    
+    .user-email {
+        color: #6b7280;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .user-bio {
+        color: #374151;
+        line-height: 1.6;
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .user-stats {
+        display: flex;
+        gap: 2rem;
+        margin-top: 1.5rem;
+    }
+    
+    .stat-item {
+        text-align: center;
+    }
+    
+    .stat-number {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #667eea;
+    }
+    
+    .stat-label {
+        color: #6b7280;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .edit-profile-btn {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s;
+        margin-top: 1rem;
+    }
+    
+    .edit-profile-btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .profile-tabs {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .tab-button {
+        background: none;
+        border: none;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        color: #6b7280;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s;
+    }
+    
+    .tab-button.active {
+        color: #667eea;
+        border-bottom-color: #667eea;
+    }
+    
+    .tab-button:hover {
+        color: #667eea;
+    }
+    
+    .tab-content {
+        display: none;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    .reviews-grid {
+        display: grid;
+        gap: 1.5rem;
+    }
+    
+    .review-card {
+        background: #f8fafc;
+        border-radius: 15px;
+        padding: 1.5rem;
+        border: 1px solid #e5e7eb;
+        transition: transform 0.2s;
+    }
+    
+    .review-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+    
+    .review-book-info {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+    
+    .review-book-cover {
+        width: 60px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    
+    .review-book-details h4 {
+        margin: 0 0 0.5rem 0;
+        color: #1f2937;
+        font-size: 1.1rem;
+    }
+    
+    .review-book-author {
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+    
+    .review-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .edit-review-btn, .delete-review-btn {
+        background: none;
+        border: none;
+        padding: 0.5rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s;
+        font-size: 0.9rem;
+    }
+    
+    .edit-review-btn {
+        color: #667eea;
+    }
+    
+    .edit-review-btn:hover {
+        background: #e0e7ff;
+    }
+    
+    .delete-review-btn {
+        color: #dc2626;
+    }
+    
+    .delete-review-btn:hover {
+        background: #fef2f2;
+    }
+    
+    .review-rating {
+        color: #fbbf24;
+        font-size: 1rem;
+        margin: 0.5rem 0;
+    }
+    
+    .review-comment {
+        color: #374151;
+        line-height: 1.5;
+        margin-bottom: 1rem;
+    }
+    
+    .review-date {
+        color: #9ca3af;
+        font-size: 0.9rem;
+        font-style: italic;
+    }
+    
+    .review-edit-form {
+        display: none;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e5e7eb;
+    }
+    
+    .review-edit-form.active {
+        display: block;
+    }
+    
+    .form-row {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .form-group {
+        flex: 1;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #374151;
+        font-weight: 500;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.2s;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+    
+    .form-group textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+    
+    .rating-input {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+    
+    .rating-input input[type="radio"] {
+        width: auto;
+        margin-right: 0.25rem;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+    }
+    
+    .save-btn, .cancel-btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background 0.2s;
+    }
+    
+    .save-btn {
+        background: #10b981;
+        color: white;
+    }
+    
+    .save-btn:hover {
+        background: #059669;
+    }
+    
+    .cancel-btn {
+        background: #6b7280;
+        color: white;
+    }
+    
+    .cancel-btn:hover {
+        background: #4b5563;
+    }
+    
+    .favorites-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+    
+    .favorite-book-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: 1px solid #e5e7eb;
+        position: relative;
+    }
+    
+    .favorite-book-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
+    
+    .remove-favorite-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(220, 38, 38, 0.9);
+        color: white;
+        border: none;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        transition: background 0.2s;
+    }
+    
+    .remove-favorite-btn:hover {
+        background: rgba(220, 38, 38, 1);
+    }
+    
+    .favorite-book-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+    
+    .favorite-book-info {
+        padding: 1.5rem;
+    }
+    
+    .favorite-book-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+    }
+    
+    .favorite-book-author {
+        color: #667eea;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    
+    .favorite-book-rating {
+        color: #fbbf24;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .favorite-book-price {
+        color: #10b981;
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+    
+    .favorite-book-actions {
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .view-book-btn {
+        flex: 1;
+        padding: 0.75rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s;
+        text-decoration: none;
+        text-align: center;
+    }
+    
+    .view-book-btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .no-content {
+        text-align: center;
+        padding: 3rem;
+        color: #6b7280;
+    }
+    
+    .no-content h3 {
+        color: #374151;
+        margin-bottom: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+        .profile-header {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            text-align: center;
+        }
+        
+        .profile-container {
+            padding: 2rem;
+            margin: 1rem;
+        }
+        
+        .avatar {
+            width: 150px;
+            height: 150px;
+        }
+        
+        .user-stats {
+            justify-content: center;
+        }
+        
+        .favorites-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-row {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="profile-container">
+    {{!-- Profile Header --}}
+    <div class="profile-header">
+        <div class="avatar-section">
+            <img src="{{user.avatar}}" alt="{{user.username}}" class="avatar" id="userAvatar">
+            <button class="avatar-upload" onclick="document.getElementById('avatarInput').click()">
+                Change Photo
+            </button>
+            <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="uploadAvatar(this)">
+        </div>
+        
+        <div class="user-info">
+            <h1>{{user.username}}</h1>
+            <div class="user-email">{{user.email}}</div>
+            <div class="user-bio">{{user.bio}}</div>
+            
+            <div class="user-stats">
+                <div class="stat-item">
+                    <div class="stat-number">{{reviews.length}}</div>
+                    <div class="stat-label">Reviews</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{favorites.length}}</div>
+                    <div class="stat-label">Favorites</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">{{user.joinDate}}</div>
+                    <div class="stat-label">Member Since</div>
+                </div>
+            </div>
+            
+            <button class="edit-profile-btn" onclick="editProfile()">Edit Profile</button>
+        </div>
+    </div>
+    
+    {{!-- Profile Tabs --}}
+    <div class="profile-tabs">
+        <button class="tab-button active" onclick="showTab('reviews')">My Reviews</button>
+        <button class="tab-button" onclick="showTab('favorites')">Favorite Books</button>
+    </div>
+    
+    {{!-- Reviews Tab --}}
+    <div id="reviews-tab" class="tab-content active">
+        {{#if reviews.length}}
+            <div class="reviews-grid">
+                {{#each reviews}}
+                    <div class="review-card" data-review-id="{{id}}">
+                        <div class="review-header">
+                            <div class="review-book-info">
+                                <img src="{{bookCover}}" alt="{{bookTitle}}" class="review-book-cover">
+                                <div class="review-book-details">
+                                    <h4>{{bookTitle}}</h4>
+                                    <div class="review-book-author">by {{bookTitle}}</div>
+                                </div>
+                            </div>
+                            <div class="review-actions">
+                                <button class="edit-review-btn" onclick="editReview('{{id}}')">
+                                    ✏️ Edit
+                                </button>
+                                <button class="delete-review-btn" onclick="deleteReview('{{id}}')">
+                                    🗑️ Delete
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="review-rating">
+                            {{#times rating}}★{{/times}}
+                            {{#times (subtract 5 rating)}}☆{{/times}}
+                            <span style="color: #6b7280; margin-left: 0.5rem;">({{rating}}/5)</span>
+                        </div>
+                        
+                        <div class="review-comment">{{comment}}</div>
+                        
+                        <div class="review-date">
+                            {{date}}
+                            {{#if isEdited}}
+                                <span style="color: #667eea;">(edited)</span>
+                            {{/if}}
+                        </div>
+                        
+                        {{!-- Edit Review Form --}}
+                        <div class="review-edit-form" id="edit-form-{{id}}">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Rating:</label>
+                                    <div class="rating-input">
+                                        <input type="radio" name="edit-rating-{{id}}" value="5" {{#if (eq rating 5)}}checked{{/if}}>
+                                        <label>5 Stars</label>
+                                        <input type="radio" name="edit-rating-{{id}}" value="4" {{#if (eq rating 4)}}checked{{/if}}>
+                                        <label>4 Stars</label>
+                                        <input type="radio" name="edit-rating-{{id}}" value="3" {{#if (eq rating 3)}}checked{{/if}}>
+                                        <label>3 Stars</label>
+                                        <input type="radio" name="edit-rating-{{id}}" value="2" {{#if (eq rating 2)}}checked{{/if}}>
+                                        <label>2 Stars</label>
+                                        <input type="radio" name="edit-rating-{{id}}" value="1" {{#if (eq rating 1)}}checked{{/if}}>
+                                        <label>1 Star</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Comment:</label>
+                                <textarea name="edit-comment-{{id}}" rows="3">{{comment}}</textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button class="save-btn" onclick="saveReview('{{id}}')">Save</button>
+                                <button class="cancel-btn" onclick="cancelEdit('{{id}}')">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        {{else}}
+            <div class="no-content">
+                <h3>No reviews yet</h3>
+                <p>Start reviewing books to see them here!</p>
+            </div>
+        {{/if}}
+    </div>
+    
+    {{!-- Favorites Tab --}}
+    <div id="favorites-tab" class="tab-content">
+        {{#if favorites.length}}
+            <div class="favorites-grid">
+                {{#each favorites}}
+                    <div class="favorite-book-card" data-book-id="{{id}}">
+                        <button class="remove-favorite-btn" onclick="removeFavorite('{{id}}')" title="Remove from favorites">
+                            ×
+                        </button>
+                        <img src="{{coverUrl}}" alt="{{title}}" class="favorite-book-image">
+                        <div class="favorite-book-info">
+                            <div class="favorite-book-title">{{title}}</div>
+                            <div class="favorite-book-author">by {{author}}</div>
+                            <div class="favorite-book-rating">
+                                {{#times rating}}★{{/times}}
+                                {{#times (subtract 5 rating)}}☆{{/times}}
+                                <span style="color: #6b7280; margin-left: 0.5rem;">{{rating}}</span>
+                            </div>
+                            <div class="favorite-book-price">¥{{price}}</div>
+                            <div class="favorite-book-actions">
+                                <a href="/books/details?id={{id}}" class="view-book-btn">View Book</a>
+                            </div>
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        {{else}}
+            <div class="no-content">
+                <h3>No favorite books yet</h3>
+                <p>Start adding books to your favorites to see them here!</p>
+            </div>
+        {{/if}}
+    </div>
+</div>
+
+<script>
+// Tab switching functionality
+function showTab(tabName) {
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Remove active class from all tab buttons
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Show selected tab content
+    document.getElementById(tabName + '-tab').classList.add('active');
+    
+    // Add active class to clicked button
+    event.target.classList.add('active');
+}
+
+// Edit review functionality
+function editReview(reviewId) {
+    const editForm = document.getElementById(`edit-form-${reviewId}`);
+    editForm.classList.add('active');
+}
+
+// Cancel edit review
+function cancelEdit(reviewId) {
+    const editForm = document.getElementById(`edit-form-${reviewId}`);
+    editForm.classList.remove('active');
+}
+
+// Save edited review
+function saveReview(reviewId) {
+    const rating = document.querySelector(`input[name="edit-rating-${reviewId}"]:checked`).value;
+    const comment = document.querySelector(`textarea[name="edit-comment-${reviewId}"]`).value;
+    
+    // Validate input
+    if (!comment.trim()) {
+        alert('Please enter a comment');
+        return;
+    }
+    
+    // In a real app, you would send this to the server
+    fetch(`/users/reviews/${reviewId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ rating, comment })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the UI
+            const reviewCard = document.querySelector(`[data-review-id="${reviewId}"]`);
+            const ratingDisplay = reviewCard.querySelector('.review-rating');
+            const commentDisplay = reviewCard.querySelector('.review-comment');
+            
+            // Update rating stars
+            ratingDisplay.innerHTML = '★'.repeat(rating) + '☆'.repeat(5-rating) + 
+                                    `<span style="color: #6b7280; margin-left: 0.5rem;">(${rating}/5)</span>`;
+            
+            // Update comment
+            commentDisplay.textContent = comment;
+            
+            // Hide edit form
+            cancelEdit(reviewId);
+            
+            // Show success message
+            alert('Review updated successfully!');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to update review');
+    });
+}
+
+// Delete review functionality
+function deleteReview(reviewId) {
+    if (confirm('Are you sure you want to delete this review?')) {
+        // In a real app, you would send this to the server
+        fetch(`/users/reviews/${reviewId}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Remove the review card from the UI
+                const reviewCard = document.querySelector(`[data-review-id="${reviewId}"]`);
+                reviewCard.remove();
+                
+                // Update the review count
+                const reviewCount = document.querySelector('.stat-number');
+                reviewCount.textContent = parseInt(reviewCount.textContent) - 1;
+                
+                alert('Review deleted successfully!');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to delete review');
+        });
+    }
+}
+
+// Remove from favorites functionality
+function removeFavorite(bookId) {
+    if (confirm('Remove this book from your favorites?')) {
+        // In a real app, you would send this to the server
+        fetch(`/users/favorites/${bookId}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Remove the book card from the UI
+                const bookCard = document.querySelector(`[data-book-id="${bookId}"]`);
+                bookCard.remove();
+                
+                // Update the favorites count
+                const favoritesCount = document.querySelectorAll('.stat-number')[1];
+                favoritesCount.textContent = parseInt(favoritesCount.textContent) - 1;
+                
+                alert('Book removed from favorites!');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to remove book from favorites');
+        });
+    }
+}
+
+// Upload avatar functionality
+function uploadAvatar(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            document.getElementById('userAvatar').src = e.target.result;
+            
+            // In a real app, you would upload this to the server
+            alert('Avatar updated successfully!');
+        };
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// Edit profile functionality
+function editProfile() {
+    // In a real app, you would show an edit form
+    alert('Edit profile functionality would be implemented here');
+}
+</script>

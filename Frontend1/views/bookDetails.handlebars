@@ -1,10 +1,11 @@
-cat > views/bookDetails.handlebars << 'EOF'
+{{!-- Book Details --}}
 <style>
     body {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
         min-height: 100vh;
         margin: 0;
         padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     
     .book-details-container {
@@ -12,7 +13,7 @@ cat > views/bookDetails.handlebars << 'EOF'
         border-radius: 20px;
         padding: 3rem;
         box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        max-width: 900px;
+        max-width: 1000px;
         margin: 2rem auto;
     }
     
@@ -20,7 +21,7 @@ cat > views/bookDetails.handlebars << 'EOF'
         display: grid;
         grid-template-columns: 300px 1fr;
         gap: 3rem;
-        margin-bottom: 2rem;
+        margin-bottom: 3rem;
     }
     
     .book-details-image {
@@ -35,6 +36,7 @@ cat > views/bookDetails.handlebars << 'EOF'
         color: #1f2937;
         font-size: 2.5rem;
         margin-bottom: 1rem;
+        line-height: 1.2;
     }
     
     .book-details-meta p {
@@ -47,21 +49,42 @@ cat > views/bookDetails.handlebars << 'EOF'
     
     .book-details-meta strong {
         color: #764ba2;
-        min-width: 100px;
+        min-width: 120px;
+        font-weight: 600;
     }
     
-    .category-tag {
+    .genres-container {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .genre-tag {
         background: #e0e7ff;
         color: #4338ca;
         padding: 0.25rem 0.75rem;
         border-radius: 20px;
         font-size: 0.9rem;
+        font-weight: 500;
+    }
+    
+    .rating-display {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 1rem 0;
+    }
+    
+    .stars {
+        color: #fbbf24;
+        font-size: 1.2rem;
     }
     
     .price {
         color: #10b981;
         font-size: 2rem;
         font-weight: bold;
+        margin: 1rem 0;
     }
     
     .add-to-cart {
@@ -73,4 +96,498 @@ cat > views/bookDetails.handlebars << 'EOF'
         border-radius: 10px;
         font-size: 1.2rem;
         font-weight: bold;
-        curs
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    
+    .add-to-cart:hover {
+        transform: translateY(-2px);
+    }
+    
+    .book-introduction {
+        background: #f8fafc;
+        padding: 2rem;
+        border-radius: 15px;
+        margin: 2rem 0;
+        line-height: 1.6;
+        color: #374151;
+    }
+    
+    .book-introduction h3 {
+        color: #1f2937;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+    }
+    
+    .reviews-section {
+        margin: 3rem 0;
+    }
+    
+    .reviews-section h3 {
+        color: #1f2937;
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #e5e7eb;
+        padding-bottom: 0.5rem;
+    }
+    
+    .review-form {
+        background: #f8fafc;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+    }
+    
+    .review-form h4 {
+        color: #1f2937;
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #374151;
+        font-weight: 500;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.2s;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+    
+    .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+    
+    .rating-input {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+    
+    .rating-input input[type="radio"] {
+        width: auto;
+        margin-right: 0.25rem;
+    }
+    
+    .submit-review {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    
+    .submit-review:hover {
+        transform: translateY(-1px);
+    }
+    
+    .error-message {
+        color: #dc2626;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        display: none;
+    }
+    
+    .reviews-list {
+        margin-top: 2rem;
+    }
+    
+    .review-item {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .reviewer-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .reviewer-name {
+        font-weight: 600;
+        color: #1f2937;
+    }
+    
+    .review-date {
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+    
+    .review-rating {
+        color: #fbbf24;
+        font-size: 1.1rem;
+    }
+    
+    .review-comment {
+        color: #374151;
+        line-height: 1.5;
+    }
+    
+    .no-reviews {
+        text-align: center;
+        color: #6b7280;
+        font-style: italic;
+        padding: 2rem;
+    }
+    
+    .related-books {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 2px solid #e5e7eb;
+    }
+    
+    .related-books h3 {
+        color: #1f2937;
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .related-books-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .related-book-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+    
+    .related-book-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .related-book-card img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
+    
+    .related-book-info {
+        padding: 1rem;
+    }
+    
+    .related-book-title {
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+    }
+    
+    .related-book-author {
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+    
+    .author-link {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .author-link:hover {
+        text-decoration: underline;
+    }
+    
+    @media (max-width: 768px) {
+        .book-details-header {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        .book-details-container {
+            padding: 2rem;
+            margin: 1rem;
+        }
+        
+        .book-details-image {
+            height: 300px;
+        }
+    }
+</style>
+
+<div class="book-details-container">
+    {{!-- Book Information --}}
+    <div class="book-details-header">
+        <div class="book-image-section">
+            <img src="{{book.coverUrl}}" alt="{{book.title}}" class="book-details-image">
+        </div>
+        
+        <div class="book-details-meta">
+            <h1>{{book.title}}</h1>
+            
+            <p>
+                <strong>Author:</strong>
+                {{#if book.author}}
+                    {{#if (eq book.author "Emma Clarke")}}
+                        <a href="/books/author/emma-clarke" class="author-link">{{book.author}}</a>
+                    {{else if (eq book.author "Cal Newport")}}
+                        <a href="/books/author/cal-newport" class="author-link">{{book.author}}</a>
+                    {{else if (eq book.author "Morgan Housel")}}
+                        <a href="/books/author/morgan-housel" class="author-link">{{book.author}}</a>
+                    {{else if (eq book.author "Robert C. Martin")}}
+                        <a href="/books/author/robert-martin" class="author-link">{{book.author}}</a>
+                    {{else if (eq book.author "Daniel Kahneman")}}
+                        <a href="/books/author/daniel-kahneman" class="author-link">{{book.author}}</a>
+                    {{else if (eq book.author "Eric Ries")}}
+                        <a href="/books/author/eric-ries" class="author-link">{{book.author}}</a>
+                    {{else}}
+                        <a href="#" class="author-link">{{book.author}}</a>
+                    {{/if}}
+                {{else}}
+                    <span>Unknown</span>
+                {{/if}}
+            </p>
+            
+            <p>
+                <strong>ISBN:</strong>
+                {{book.ISBN}}
+            </p>
+            
+            <p>
+                <strong>Published:</strong>
+                {{book.publication_date}}
+            </p>
+            
+            <p>
+                <strong>Category:</strong>
+                <span class="category-tag">{{book.category}}</span>
+            </p>
+            
+            <p>
+                <strong>Genres:</strong>
+                <div class="genres-container">
+                    {{#each book.genres}}
+                        <span class="genre-tag">{{this}}</span>
+                    {{/each}}
+                </div>
+            </p>
+            
+            <div class="rating-display">
+                <strong>Rating:</strong>
+                <span class="stars">
+                    {{#if book.rating}}
+                        {{#if (gt book.rating 0)}}
+                            {{#times book.rating}}
+                                ★
+                            {{/times}}
+                            {{#times (subtract 5 book.rating)}}
+                                ☆
+                            {{/times}}
+                        {{else}}
+                            <span style="color: #9ca3af;">Not rated</span>
+                        {{/if}}
+                    {{else}}
+                        <span style="color: #9ca3af;">Not rated</span>
+                    {{/if}}
+                </span>
+                <span>({{book.rating}}/5)</span>
+            </div>
+            
+            <div class="price">¥{{book.price}}</div>
+            
+<!--            <button class="add-to-cart">Add to Cart</button>-->
+        </div>
+    </div>
+    
+    {{!-- About This Book --}}
+    <div class="book-introduction">
+        <h3>About This Book</h3>
+        <p>{{book.introduction}}</p>
+    </div>
+    
+    {{!-- Customer Reviews --}}
+    <div class="reviews-section">
+        <h3>Customer Reviews ({{book.reviews.length}})</h3>
+        
+        {{!-- Write a Review --}}
+        <div class="review-form">
+            <h4>Write a Review</h4>
+            <form id="reviewForm">
+                <div class="form-group">
+                    <label for="reviewerName">Name:</label>
+                    <input type="text" id="reviewerName" name="reviewerName" required>
+                    <div class="error-message" id="nameError">Please enter your name</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reviewRating">Rating:</label>
+                    <div class="rating-input">
+                        <input type="radio" id="rating5" name="rating" value="5" required>
+                        <label for="rating5">5 Stars</label>
+                        <input type="radio" id="rating4" name="rating" value="4">
+                        <label for="rating4">4 Stars</label>
+                        <input type="radio" id="rating3" name="rating" value="3">
+                        <label for="rating3">3 Stars</label>
+                        <input type="radio" id="rating2" name="rating" value="2">
+                        <label for="rating2">2 Stars</label>
+                        <input type="radio" id="rating1" name="rating" value="1">
+                        <label for="rating1">1 Star</label>
+                    </div>
+                    <div class="error-message" id="ratingError">Please select a rating</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reviewComment">Your Review:</label>
+                    <textarea id="reviewComment" name="reviewComment" placeholder="Share what you think about this book..." required></textarea>
+                    <div class="error-message" id="commentError">Please write at least 10 characters</div>
+                </div>
+                
+                <button type="submit" class="submit-review">Submit Review</button>
+            </form>
+        </div>
+        
+        {{!-- Reviews List --}}
+        <div class="reviews-list">
+            {{#if book.reviews.length}}
+                {{#each book.reviews}}
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <span class="reviewer-name">{{user}}</span>
+                                <span class="review-date">{{date}}</span>
+                            </div>
+                            <div class="review-rating">
+                                {{#times rating}}★{{/times}}
+                                {{#times (subtract 5 rating)}}☆{{/times}}
+                            </div>
+                        </div>
+                        <div class="review-comment">{{comment}}</div>
+                    </div>
+                {{/each}}
+            {{else}}
+                <div class="no-reviews">
+                    No reviews yet. Be the first to share your thoughts!
+                </div>
+            {{/if}}
+        </div>
+    </div>
+    
+    {{!-- You Might Also Like --}}
+    {{#if relatedBooks.length}}
+        <div class="related-books">
+            <h3>You Might Also Like</h3>
+            <div class="related-books-grid">
+                {{#each relatedBooks}}
+                    <div class="related-book-card">
+                        <img src="{{coverUrl}}" alt="{{title}}">
+                        <div class="related-book-info">
+                            <div class="related-book-title">{{title}}</div>
+                            <div class="related-book-author">{{author}}</div>
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+    {{/if}}
+</div>
+
+<script>
+// Review form validation and submission
+document.getElementById('reviewForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Reset error messages
+    document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
+    
+    const name = document.getElementById('reviewerName').value.trim();
+    const rating = document.querySelector('input[name="rating"]:checked');
+    const comment = document.getElementById('reviewComment').value.trim();
+    
+    let hasError = false;
+    
+    // Validate name
+    if (!name) {
+        document.getElementById('nameError').style.display = 'block';
+        hasError = true;
+    }
+    
+    // Validate rating
+    if (!rating) {
+        document.getElementById('ratingError').style.display = 'block';
+        hasError = true;
+    }
+    
+    // Validate comment content
+    if (!comment || comment.length < 10) {
+        document.getElementById('commentError').style.display = 'block';
+        hasError = true;
+    }
+    
+    if (hasError) {
+        return;
+    }
+    
+    // Simulate review submission
+    alert('Thanks! Your review has been submitted.');
+    
+    // Reset form
+    this.reset();
+});
+
+// Real-time validation
+document.getElementById('reviewerName').addEventListener('blur', function() {
+    const name = this.value.trim();
+    const error = document.getElementById('nameError');
+    
+    if (!name) {
+        error.style.display = 'block';
+    } else {
+        error.style.display = 'none';
+    }
+});
+
+document.getElementById('reviewComment').addEventListener('input', function() {
+    const comment = this.value.trim();
+    const error = document.getElementById('commentError');
+    
+    if (comment.length < 10 && comment.length > 0) {
+        error.style.display = 'block';
+    } else {
+        error.style.display = 'none';
+    }
+});
+
+// Rating selection validation
+document.querySelectorAll('input[name="rating"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        document.getElementById('ratingError').style.display = 'none';
+    });
+});
+</script>
