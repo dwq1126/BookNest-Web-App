@@ -5,6 +5,8 @@ import { fileURLToPath } from 'url';
 import homeRouter from './routes/home.js';
 import bookRouter from './routes/books.js';
 import userRouter from './routes/users.js';
+import adminRouter from './routes/admin.js';
+import authRouter from './routes/auth.js';
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -63,6 +65,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.use('/', homeRouter);
 app.use('/books', bookRouter);
 app.use('/users', userRouter);
+app.use('/admin', adminRouter);
+app.use('/auth', authRouter);
 
 // 404
 app.use((req, res) => {

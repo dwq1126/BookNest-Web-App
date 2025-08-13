@@ -184,9 +184,14 @@ router.get('/details', (req, res) => {
     .filter(b => (b.category === book.category || b.author === book.author) && b._id !== book._id)
     .slice(0, 3);
   
+  // Check if book is in user's favorites (simplified - in real app, check user session)
+  // For demo purposes, we'll assume some books are favorited
+  const isFavorited = Math.random() > 0.5; // Random for demo
+  
   res.render('bookDetails', { 
     book,
-    relatedBooks
+    relatedBooks,
+    isFavorited: isFavorited
   });
 });
 

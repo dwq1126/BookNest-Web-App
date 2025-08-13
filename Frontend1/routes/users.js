@@ -108,6 +108,36 @@ router.get('/favorites', (req, res) => {
     res.json(mockUserFavorites);
 });
 
+// Add book to favorites
+router.post('/favorites', (req, res) => {
+    const { bookId, bookTitle } = req.body;
+    
+    if (!bookId || !bookTitle) {
+        return res.status(400).json({ success: false, message: 'Book ID and title are required' });
+    }
+    
+    // Check if already in favorites
+    const existingFavorite = mockUserFavorites.find(fav => fav.id === bookId);
+    if (existingFavorite) {
+        return res.status(400).json({ success: false, message: 'Book is already in favorites' });
+    }
+    
+    // Add to favorites (simplified for demo)
+    const newFavorite = {
+        id: bookId,
+        title: bookTitle,
+        author: 'Unknown Author', // In real app, fetch from book data
+        coverUrl: '/img/deepwork.jpg', // Default cover
+        rating: 0,
+        price: 0,
+        category: 'Unknown',
+        addedDate: new Date().toISOString().split('T')[0]
+    };
+    
+    mockUserFavorites.push(newFavorite);
+    res.json({ success: true, message: 'Book added to favorites', favorite: newFavorite });
+});
+
 // Delete review
 router.delete('/reviews/:reviewId', (req, res) => {
     const reviewId = req.params.reviewId;
