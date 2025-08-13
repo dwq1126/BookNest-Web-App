@@ -1,0 +1,506 @@
+{{!-- Admin Books Management Page --}}
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .admin-container {
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        max-width: 1200px;
+        margin: 2rem auto;
+    }
+    
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 3rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .page-title {
+        color: #1f2937;
+        font-size: 2.5rem;
+        margin: 0;
+    }
+    
+    .add-book-btn {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .add-book-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    }
+    
+    .books-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .books-table th {
+        background: #f8fafc;
+        color: #374151;
+        font-weight: 600;
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .books-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #f3f4f6;
+        vertical-align: top;
+    }
+    
+    .books-table tr:hover {
+        background: #f9fafb;
+    }
+    
+    .book-cover {
+        width: 60px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .book-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .book-title {
+        font-weight: 600;
+        color: #1f2937;
+        font-size: 1rem;
+    }
+    
+    .book-author {
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+    
+    .book-category {
+        background: #e0e7ff;
+        color: #4338ca;
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        display: inline-block;
+        margin-top: 0.25rem;
+    }
+    
+    .book-price {
+        font-weight: 600;
+        color: #10b981;
+        font-size: 1.1rem;
+    }
+    
+    .book-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .stars {
+        color: #fbbf24;
+        font-size: 0.9rem;
+    }
+    
+    .book-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+    
+    .status-active {
+        background: #d1fae5;
+        color: #065f46;
+    }
+    
+    .status-inactive {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .btn-edit {
+        background: #3b82f6;
+        color: white;
+    }
+    
+    .btn-edit:hover {
+        background: #2563eb;
+        transform: translateY(-1px);
+    }
+    
+    .btn-delete {
+        background: #dc2626;
+        color: white;
+    }
+    
+    .btn-delete:hover {
+        background: #b91c1c;
+        transform: translateY(-1px);
+    }
+    
+    .no-books {
+        text-align: center;
+        padding: 3rem;
+        color: #6b7280;
+        font-style: italic;
+    }
+    
+    .search-filter {
+        background: #f8fafc;
+        padding: 1.5rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        border: 1px solid #e5e7eb;
+    }
+    
+    .search-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 1rem;
+        align-items: end;
+    }
+    
+    .search-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .search-group label {
+        margin-bottom: 0.5rem;
+        color: #374151;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+    
+    .search-group input,
+    .search-group select {
+        padding: 0.75rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.2s;
+    }
+    
+    .search-group input:focus,
+    .search-group select:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+    
+    .search-btn {
+        background: #667eea;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .search-btn:hover {
+        background: #5a67d8;
+        transform: translateY(-1px);
+    }
+    
+    .stats-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+    
+    @media (max-width: 768px) {
+        .admin-container {
+            padding: 2rem;
+            margin: 1rem;
+        }
+        
+        .page-header {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch;
+        }
+        
+        .add-book-btn {
+            text-align: center;
+            justify-content: center;
+        }
+        
+        .books-table {
+            font-size: 0.9rem;
+        }
+        
+        .books-table th,
+        .books-table td {
+            padding: 0.75rem 0.5rem;
+        }
+        
+        .search-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .stats-cards {
+            grid-template-columns: 1fr;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="admin-container">
+    <div class="page-header">
+        <h1 class="page-title">Book Management</h1>
+        <a href="/admin/books/add" class="add-book-btn">
+            <span>➕</span>
+            Add New Book
+        </a>
+    </div>
+    
+    {{!-- Statistics Cards --}}
+    <div class="stats-cards">
+        <div class="stat-card">
+            <div class="stat-number">{{books.length}}</div>
+            <div class="stat-label">Total Books</div>
+        </div>
+    </div>
+    
+    {{!-- Search and Filter --}}
+    <div class="search-filter">
+        <div class="search-row">
+            <div class="search-group">
+                <label for="searchTitle">Search by Title</label>
+                <input type="text" id="searchTitle" placeholder="Enter book title...">
+            </div>
+            <div class="search-group">
+                <label for="filterCategory">Filter by Category</label>
+                <select id="filterCategory">
+                    <option value="">All Categories</option>
+                    <option value="Fiction">Fiction</option>
+                    <option value="Non-Fiction">Non-Fiction</option>
+                    <option value="Mystery">Mystery</option>
+                    <option value="Thriller">Thriller</option>
+                    <option value="Romance">Romance</option>
+                    <option value="Science Fiction">Science Fiction</option>
+                    <option value="Fantasy">Fantasy</option>
+                    <option value="Biography">Biography</option>
+                    <option value="History">History</option>
+                    <option value="Self-Help">Self-Help</option>
+                    <option value="Business">Business</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Psychology">Psychology</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Productivity">Productivity</option>
+                    <option value="Programming">Programming</option>
+                    <option value="Philosophy">Philosophy</option>
+                </select>
+            </div>
+            <button class="search-btn" onclick="filterBooks()">Search</button>
+        </div>
+    </div>
+    
+    {{!-- Books Table --}}
+    {{#if books.length}}
+        <table class="books-table" id="booksTable">
+            <thead>
+                <tr>
+                    <th>Cover</th>
+                    <th>Book Information</th>
+                    <th>Category</th>
+                    <th>Rating</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each books}}
+                    <tr data-title="{{title}}" data-category="{{category}}">
+                        <td>
+                            <img src="{{coverUrl}}" alt="{{title}}" class="book-cover" onerror="this.style.display='none'">
+                        </td>
+                        <td>
+                            <div class="book-info">
+                                <div class="book-title">{{title}}</div>
+                                <div class="book-author">{{author}}</div>
+                                <div class="book-category">{{category}}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="book-category">{{category}}</span>
+                        </td>
+                        <td>
+                            <div class="book-rating">
+                                {{#if rating}}
+                                    {{#if (gt rating 0)}}
+                                        <span class="stars">
+                                            {{#times rating}}★{{/times}}
+                                        </span>
+                                        <span>({{rating}}/5)</span>
+                                    {{else}}
+                                        <span style="color: #9ca3af;">Not rated</span>
+                                    {{/if}}
+                                {{else}}
+                                    <span style="color: #9ca3af;">Not rated</span>
+                                {{/if}}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="book-status status-{{status}}">{{status}}</span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="/admin/books/edit/{{_id}}" class="btn btn-edit">
+                                    Edit
+                                </a>
+                                <button class="btn btn-delete" onclick="deleteBook('{{_id}}', '{{title}}')">
+                                    Delete
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    {{else}}
+        <div class="no-books">
+            <h3>No books found</h3>
+            <p>Start by adding your first book to the collection.</p>
+            <a href="/admin/books/add" class="add-book-btn" style="margin-top: 1rem; display: inline-block;">
+                <span>➕</span>
+                Add Your First Book
+            </a>
+        </div>
+    {{/if}}
+</div>
+
+<script>
+// Filter books functionality
+function filterBooks() {
+    const searchTitle = document.getElementById('searchTitle').value.toLowerCase();
+    const filterCategory = document.getElementById('filterCategory').value;
+    const table = document.getElementById('booksTable');
+    const rows = table.querySelectorAll('tbody tr');
+    
+    rows.forEach(row => {
+        const title = row.getAttribute('data-title').toLowerCase();
+        const category = row.getAttribute('data-category');
+        
+        const titleMatch = title.includes(searchTitle);
+        const categoryMatch = !filterCategory || category === filterCategory;
+        
+        if (titleMatch && categoryMatch) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+// Delete book functionality
+function deleteBook(bookId, bookTitle) {
+    if (confirm(`Are you sure you want to delete "${bookTitle}"? This action cannot be undone.`)) {
+        fetch(`/admin/books/${bookId}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                alert(result.message);
+                // Reload the page to reflect changes
+                window.location.reload();
+            } else {
+                alert(result.message || 'An error occurred');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while deleting the book');
+        });
+    }
+}
+
+// Real-time search
+document.getElementById('searchTitle').addEventListener('input', filterBooks);
+document.getElementById('filterCategory').addEventListener('change', filterBooks);
+</script>

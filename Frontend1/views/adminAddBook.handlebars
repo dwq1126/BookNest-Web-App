@@ -1,0 +1,494 @@
+{{!-- Admin Add/Edit Book Page --}}
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .admin-container {
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        max-width: 800px;
+        margin: 2rem auto;
+    }
+    
+    .page-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .page-title {
+        color: #1f2937;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .page-subtitle {
+        color: #6b7280;
+        font-size: 1.1rem;
+    }
+    
+    .book-form {
+        display: grid;
+        gap: 2rem;
+    }
+    
+    .form-section {
+        background: #f8fafc;
+        padding: 2rem;
+        border-radius: 15px;
+        border: 1px solid #e5e7eb;
+    }
+    
+    .section-title {
+        color: #1f2937;
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-row.full-width {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .form-group label {
+        margin-bottom: 0.5rem;
+        color: #374151;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+    
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        padding: 0.75rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.2s;
+        background: white;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .form-group textarea {
+        resize: vertical;
+        min-height: 120px;
+        font-family: inherit;
+    }
+    
+    .required {
+        color: #dc2626;
+        margin-left: 0.25rem;
+    }
+    
+    .cover-preview {
+        margin-top: 1rem;
+        text-align: center;
+    }
+    
+    .cover-preview img {
+        max-width: 200px;
+        max-height: 250px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border: 2px solid #e5e7eb;
+    }
+    
+    .cover-preview .no-cover {
+        width: 200px;
+        height: 250px;
+        background: #f3f4f6;
+        border: 2px dashed #d1d5db;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #9ca3af;
+        font-style: italic;
+        margin: 0 auto;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 2px solid #e5e7eb;
+    }
+    
+    .btn {
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-secondary {
+        background: #6b7280;
+        color: white;
+    }
+    
+    .btn-secondary:hover {
+        background: #4b5563;
+        transform: translateY(-2px);
+    }
+    
+    .btn-danger {
+        background: #dc2626;
+        color: white;
+    }
+    
+    .btn-danger:hover {
+        background: #b91c1c;
+        transform: translateY(-2px);
+    }
+    
+    .alert {
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        display: none;
+    }
+    
+    .alert-success {
+        background: #d1fae5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+    
+    .alert-error {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+    
+    .loading {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+    
+    .loading::after {
+        content: '...';
+        animation: dots 1.5s infinite;
+    }
+    
+    @keyframes dots {
+        0%, 20% { content: '.'; }
+        40% { content: '..'; }
+        60%, 100% { content: '...'; }
+    }
+    
+    @media (max-width: 768px) {
+        .admin-container {
+            padding: 2rem;
+            margin: 1rem;
+        }
+        
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+        }
+        
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="admin-container">
+    <div class="page-header">
+        <h1 class="page-title">{{#if isEdit}}Edit Book{{else}}Add New Book{{/if}}</h1>
+        <p class="page-subtitle">{{#if isEdit}}Update book information{{else}}Create a new book entry{{/if}}</p>
+    </div>
+    
+    <div id="alertContainer"></div>
+    
+    <form id="bookForm" class="book-form">
+        {{!-- Basic Information --}}
+        <div class="form-section">
+            <h3 class="section-title">Basic Information</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="title">Book Title <span class="required">*</span></label>
+                    <input type="text" id="title" name="title" value="{{#if book}}{{book.title}}{{/if}}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="author">Author <span class="required">*</span></label>
+                    <input type="text" id="author" name="author" value="{{#if book}}{{book.author}}{{/if}}" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="category">Category <span class="required">*</span></label>
+                    <select id="category" name="category" required>
+                        <option value="">Select Category</option>
+                        <option value="Fiction" {{#if (eq book.category "Fiction")}}selected{{/if}}>Fiction</option>
+                        <option value="Non-Fiction" {{#if (eq book.category "Non-Fiction")}}selected{{/if}}>Non-Fiction</option>
+                        <option value="Mystery" {{#if (eq book.category "Mystery")}}selected{{/if}}>Mystery</option>
+                        <option value="Thriller" {{#if (eq book.category "Thriller")}}selected{{/if}}>Thriller</option>
+                        <option value="Romance" {{#if (eq book.category "Romance")}}selected{{/if}}>Romance</option>
+                        <option value="Science Fiction" {{#if (eq book.category "Science Fiction")}}selected{{/if}}>Science Fiction</option>
+                        <option value="Fantasy" {{#if (eq book.category "Fantasy")}}selected{{/if}}>Fantasy</option>
+                        <option value="Biography" {{#if (eq book.category "Biography")}}selected{{/if}}>Biography</option>
+                        <option value="History" {{#if (eq book.category "History")}}selected{{/if}}>History</option>
+                        <option value="Self-Help" {{#if (eq book.category "Self-Help")}}selected{{/if}}>Self-Help</option>
+                        <option value="Business" {{#if (eq book.category "Business")}}selected{{/if}}>Business</option>
+                        <option value="Technology" {{#if (eq book.category "Technology")}}selected{{/if}}>Technology</option>
+                        <option value="Psychology" {{#if (eq book.category "Psychology")}}selected{{/if}}>Psychology</option>
+                        <option value="Finance" {{#if (eq book.category "Finance")}}selected{{/if}}>Finance</option>
+                        <option value="Productivity" {{#if (eq book.category "Productivity")}}selected{{/if}}>Productivity</option>
+                        <option value="Programming" {{#if (eq book.category "Programming")}}selected{{/if}}>Programming</option>
+                        <option value="Philosophy" {{#if (eq book.category "Philosophy")}}selected{{/if}}>Philosophy</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="price">Price <span class="required">*</span></label>
+                    <input type="number" id="price" name="price" step="0.01" min="0" value="{{#if book}}{{book.price}}{{/if}}" required>
+                </div>
+            </div>
+        </div>
+        
+        {{!-- Book Details --}}
+        <div class="form-section">
+            <h3 class="section-title">Book Details</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="ISBN">ISBN</label>
+                    <input type="text" id="ISBN" name="ISBN" value="{{#if book}}{{book.ISBN}}{{/if}}" placeholder="e.g., 978-1234567890">
+                </div>
+                
+                <div class="form-group">
+                    <label for="publication_date">Publication Date</label>
+                    <input type="date" id="publication_date" name="publication_date" value="{{#if book}}{{book.publication_date}}{{/if}}">
+                </div>
+            </div>
+            
+            <div class="form-row full-width">
+                <div class="form-group">
+                    <label for="genres">Genres</label>
+                    <input type="text" id="genres" name="genres" value="{{#if book}}{{book.genres}}{{/if}}" placeholder="e.g., Mystery, Thriller, Fiction (comma separated)">
+                </div>
+            </div>
+            
+            <div class="form-row full-width">
+                <div class="form-group">
+                    <label for="introduction">Book Introduction <span class="required">*</span></label>
+                    <textarea id="introduction" name="introduction" required>{{#if book}}{{book.introduction}}{{/if}}</textarea>
+                </div>
+            </div>
+        </div>
+        
+        {{!-- Cover Image --}}
+        <div class="form-section">
+            <h3 class="section-title">Cover Image</h3>
+            
+            <div class="form-row full-width">
+                <div class="form-group">
+                    <label for="coverUrl">Cover Image URL <span class="required">*</span></label>
+                    <input type="url" id="coverUrl" name="coverUrl" value="{{#if book}}{{book.coverUrl}}{{/if}}" placeholder="https://example.com/book-cover.jpg" required>
+                </div>
+            </div>
+            
+            <div class="cover-preview">
+                <div id="coverPreview">
+                    {{#if book}}
+                        <img src="{{book.coverUrl}}" alt="{{book.title}}" id="coverImage">
+                    {{else}}
+                        <div class="no-cover">No cover image</div>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+        
+        {{!-- Form Actions --}}
+        <div class="form-actions">
+            <a href="/admin/books" class="btn btn-secondary">Cancel</a>
+            
+            {{#if isEdit}}
+                <button type="button" class="btn btn-danger" onclick="deleteBook('{{book._id}}')">Delete Book</button>
+                <button type="submit" class="btn btn-primary">Update Book</button>
+            {{else}}
+                <button type="submit" class="btn btn-primary">Add Book</button>
+            {{/if}}
+        </div>
+    </form>
+</div>
+
+<script>
+// Cover preview functionality
+document.getElementById('coverUrl').addEventListener('input', function() {
+    const url = this.value.trim();
+    const preview = document.getElementById('coverPreview');
+    
+    if (url) {
+        preview.innerHTML = `<img src="${url}" alt="Book Cover" id="coverImage" onerror="this.parentElement.innerHTML='<div class=\\"no-cover\\">Invalid image URL</div>'">`;
+    } else {
+        preview.innerHTML = '<div class="no-cover">No cover image</div>';
+    }
+});
+
+// Form submission
+document.getElementById('bookForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+    
+    // Validate required fields
+    const requiredFields = ['title', 'author', 'introduction', 'coverUrl', 'category', 'price'];
+    for (const field of requiredFields) {
+        if (!data[field] || data[field].trim() === '') {
+            showAlert(`Please fill in the ${field} field`, 'error');
+            return;
+        }
+    }
+    
+    // Validate price
+    if (isNaN(data.price) || parseFloat(data.price) < 0) {
+        showAlert('Please enter a valid price', 'error');
+        return;
+    }
+    
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    
+    // Show loading state
+    submitBtn.classList.add('loading');
+    submitBtn.textContent = 'Processing';
+    
+    const isEdit = {{#if isEdit}}true{{else}}false{{/if}};
+    const url = isEdit ? `/admin/books/edit/{{#if book}}{{book._id}}{{/if}}` : '/admin/books/add';
+    const method = isEdit ? 'PUT' : 'POST';
+    
+    fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showAlert(result.message, 'success');
+            
+            // Redirect after successful submission
+            setTimeout(() => {
+                window.location.href = '/admin/books';
+            }, 1500);
+        } else {
+            showAlert(result.message || 'An error occurred', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('An error occurred while saving the book', 'error');
+    })
+    .finally(() => {
+        // Reset loading state
+        submitBtn.classList.remove('loading');
+        submitBtn.textContent = originalText;
+    });
+});
+
+// Delete book functionality
+function deleteBook(bookId) {
+    if (confirm('Are you sure you want to delete this book? This action cannot be undone.')) {
+        fetch(`/admin/books/${bookId}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                showAlert(result.message, 'success');
+                setTimeout(() => {
+                    window.location.href = '/admin/books';
+                }, 1500);
+            } else {
+                showAlert(result.message || 'An error occurred', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('An error occurred while deleting the book', 'error');
+        });
+    }
+}
+
+// Show alert messages
+function showAlert(message, type) {
+    const alertContainer = document.getElementById('alertContainer');
+    const alert = document.createElement('div');
+    alert.className = `alert alert-${type}`;
+    alert.textContent = message;
+    alert.style.display = 'block';
+    
+    alertContainer.appendChild(alert);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        alert.remove();
+    }, 5000);
+}
+
+// Initialize cover preview on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const coverUrl = document.getElementById('coverUrl').value;
+    if (coverUrl) {
+        document.getElementById('coverUrl').dispatchEvent(new Event('input'));
+    }
+});
+</script>
