@@ -1,0 +1,79 @@
+
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.main-header {
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0.75rem 1.5rem;
+}
+
+.main-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand-link {
+    font-weight: bold;
+    font-size: 1.25rem;
+    color: #1f2937;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.nav-link {
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    text-decoration: none;
+    transition: transform 0.2s;
+}
+
+.nav-link:hover {
+    transform: translateY(-2px);
+}
+.nav-link.nav-link-home-main {
+    background: transparent;
+    color: #1f2937;
+}
+
+.nav-link.nav-link-admin-books {
+    background: #f59e0b;
+}
+
+.nav-link.nav-link-admin-authors {
+    background: #10b981;
+}
+
+.nav-link.nav-link-profile {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+}
+
+.nav-link.nav-link-logout {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.nav-link.nav-link-home-guest {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+}
+
+.nav-link.nav-link-login {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
