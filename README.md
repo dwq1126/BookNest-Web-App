@@ -43,6 +43,12 @@ After successful execution, the database will create the following collections:
 - `users`: User information
 - `reviews`: Review information
 
+### 3. Website launch
+
+```bash
+npm start
+```
+
 ## Core Function Usage Instructions
 
 ### 1. Book Management (`data/Book.js`)
