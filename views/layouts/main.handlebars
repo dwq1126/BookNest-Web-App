@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookNest</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/main-layout.css">
+    {{#each pageCSS}}
+    <link rel="stylesheet" href="{{this}}">
+    {{/each}}
+
+</head>
+<body>
+    <header class="main-header">
+        <nav class="main-nav">
+            <a href="/" class="brand-link">
+                BookNest
+            </a>
+            <div class="nav-links">
+                {{#if user}}
+                    <a href="/" class="nav-link nav-link-home-main">
+                        HOME
+                    </a>
+                    
+                    {{#if user.isAdmin}}
+                        <a href="/admin/books" class="nav-link nav-link-admin-books">
+                            Manage Books
+                        </a>
+                        <a href="/admin/authors" class="nav-link nav-link-admin-authors">
+                            Manage Authors
+                        </a>
+                    {{/if}}
+                    
+                    <a href="/users/profile" class="nav-link nav-link-profile">
+                        {{user.firstName}} {{user.lastName}}
+                    </a>
+                    
+                    <a href="/auth/logout" class="nav-link nav-link-logout">
+                        Logout
+                    </a>
+                {{else}}
+                    <a href="/" class="nav-link nav-link-home-guest">
+                        Home
+                    </a>
+                    <a href="/auth/login" class="nav-link nav-link-login">
+                        Sign In
+                    </a>
+                {{/if}}
+            </div>
+        </nav>
+    </header>
+    
+    <div class="container">
+        {{{body}}}
+    </div>
+</body>
+</html>
