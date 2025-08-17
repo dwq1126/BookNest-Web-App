@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{#if author.name}}{{author.name}} - Author Profile{{else}}Author Profile - BookNest{{/if}}</title>
+  <link rel="stylesheet" href="/css/author.css">
+  <link rel="icon" href="/favicon.ico">
+</head>
+<body>
+  <div class="author-container">
+    <a href="javascript:history.back()" class="back-link">Back</a>
+    <div class="author-header">
+      <div class="author-photo-section">
+        {{#if author.photo}}
+          <img src="{{author.photo}}" alt="{{author.name}}" class="author-photo"
+               onerror="this.src='/img/author-placeholder.png'">
+        {{else}}
+          <img src="/img/author-placeholder.png" alt="No photo" class="author-photo">
+        {{/if}}
+      </div>
+
+      <div class="author-info">
+        <h1>{{#if author.name}}{{author.name}}{{else}}Unknown Author{{/if}}</h1>
+
+        <div class="author-bio">
+          {{#if author.biography}}
+            {{author.biography}}
+          {{else}}
+            <span class="muted">No biography provided.</span>
+          {{/if}}
+        </div>
+
+        <div class="author-stats">
+          <div class="stat-item">
+            <div class="stat-number">
+              {{#if author.works}}
+                {{author.works.length}}
+              {{else}}
+                {{#if books.length}}{{books.length}}{{else}}0{{/if}}
+              {{/if}}
+            </div>
+            <div class="stat-label">Books</div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-number">
+              {{#if books.length}}
+                {{#if author.avgRating}}
+                  {{author.avgRating}}
+                {{else}}
+                  {{#if avgRatingForView}}{{avgRatingForView}}{{else}}0{{/if}}
+                {{/if}}
+              {{else}}
+                0
+              {{/if}}
+            </div>
+            <div class="stat-label">Avg Rating</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="book-list">
+      {{#if books.length}}
+        {{#each books}}
+          <div class="book-card">
+            {{#if this.coverUrl}}
+              <img src="{{this.coverUrl}}" alt="{{this.title}}"
+                   onerror="this.style.background='linear-gradient(135deg, #667eea 0%, #764ba2 100%)'; this.style.height='300px'">
+            {{else}}
+              <div class="cover-placeholder" style="height:300px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);"></div>
+            {{/if}}
+
+            <div class="book-card-content">
+              <h3>{{this.title}}</h3>
+
+              <p class="book-author" style="color:#764ba2;font-weight:600;">
+                {{#if this.author}}
+                  {{this.author}}
+                {{else if this.authorName}}
+                  {{this.authorName}}
+                {{else}}
+                  Unknown
+                {{/if}}
+              </p>
+
+              <p>⭐ {{#if this.rating}}{{this.rating}}{{else}}0{{/if}}</p>
+
+              <p>
+                {{#if this.genres}}
+                  <span style="background:#e0e7ff;color:#4338ca;padding:.25rem .5rem;border-radius:4px;font-size:.85rem;">
+                    {{join this.genres ", "}}
+                  </span>
+                {{/if}}
+              </p>
+              <a href="/book/{{this._id}}?q={{keyword}}">View Details →</a>
+            </div>
+          </div>
+        {{/each}}
+      {{else}}
+        <p class="muted" style="padding:1rem 0;">No books found for this author.</p>
+      {{/if}}
+    </div>
+  </div>
+
+  <script src="/js/author.js"></script>
+</body>
+</html>

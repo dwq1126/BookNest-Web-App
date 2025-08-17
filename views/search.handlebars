@@ -1,0 +1,40 @@
+<link rel="stylesheet" href="/css/search.css">
+
+<h1>📖 Search Results</h1>
+
+{{#if q}} 
+<p class="search-info">
+    Found <strong>{{results.length}}</strong> results for "<strong>{{q}}</strong>"
+</p>
+{{/if}}
+<form id="searchForm" action="/search" method="GET">
+    <input type="text" id="searchInput" name="q" placeholder="🔍 Search books, authors, or categories..." required minlength="2" value="{{q}}">
+    <button type="submit">Search</button>
+</form>
+
+{{#if results.length}} 
+<div class="book-list">
+    {{#each results}}
+    <div class="book-card">
+        <img src="{{this.coverUrl}}" alt="{{this.title}}" 
+             onerror="this.style.background='linear-gradient(135deg, #667eea 0%, #764ba2 100%)'; this.style.height='300px'">
+        <div class="book-card-content">
+            <h3>{{this.title}}</h3>
+            <p style="color: #764ba2; font-weight: 600;">{{this.author}}</p>
+            <p>⭐ {{this.rating}}</p>
+            <p><span style="background: #e0e7ff; color: #4338ca; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem;">{{this.genres}}</span></p>
+            <a href="/book/{{this._id}}">View Details →</a>
+        </div>
+    </div>
+    {{/each}}
+</div>
+{{else}}
+<div class="no-results">
+    <h3>😔 No books found</h3>
+    <p>Try searching with different keywords</p>
+</div>
+{{/if}}
+
+<div style="text-align: center;">
+    <a href="/" class="back-link">← Back to Home</a>
+</div>

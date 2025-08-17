@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Book Details</title>
+  <link rel="stylesheet" href="/css/book-details.css">
+</head>
+<body>
+  <div class="book-details-container">
+    <a href="javascript:history.back()" class="back-link">Back</a>
+    <div class="book-details-header">
+      <div class="book-image-section">
+        <img src="https://via.placeholder.com/300x400?text=Book+Cover" alt="Book Cover" class="book-details-image">
+      </div>
+      <div class="book-details-meta">
+        <h1>{{book.title}}</h1>
+        <p><strong>Author:</strong> <a href="/author/{{book.authorId}}" class="author-link">{{book.author}}</a></p>
+        <p><strong>ISBN:</strong>{{book.ISBN}}</p>
+        <p><strong>Published:</strong>{{book.publication_date}}</p>
+        <p><strong>Genres:</strong></p>
+        <div class="genres-container">
+          <span class="genre-tag">{{book.genres}}</span>
+        </div>
+
+        <div class="rating-display">
+          <strong>Rating:</strong>
+          <p> {{book.rating}}⭐</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="book-introduction">
+      <h3>About This Book</h3>
+      <p>{{book.introduction}}</p>
+    </div>
+
+    <div class="reviews-section">
+      <h3>Customer Reviews ({{book.reviews.length}})</h3>
+
+      {{#if user}}
+      <div class="review-form">
+        <h4>Write a Review</h4>
+        <form id="reviewForm">
+          <input type="hidden" id="bookId" value="{{book._id}}">
+          <input type="hidden" id="userId" value="{{user.id}}">
+
+          <div class="form-group">
+            <label for="reviewerName">Name:</label>
+            <input type="text" id="reviewerName" name="reviewerName" value="{{user.firstName}} {{user.lastName}}"
+              readonly>
+          </div>
+
+          <div class="form-group">
+            <label>Rating:</label>
+            <div class="rating-input">
+              <label><input type="radio" name="rating" value="1"> 1 Star</label>
+              <label><input type="radio" name="rating" value="2"> 2 Stars</label>
+              <label><input type="radio" name="rating" value="3"> 3 Stars</label>
+              <label><input type="radio" name="rating" value="4"> 4 Stars</label>
+              <label><input type="radio" name="rating" value="5" checked> 5 Stars</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reviewComment">Your Review:</label>
+            <textarea id="reviewComment" name="reviewComment" placeholder="Share what you think about this book..."
+              required></textarea>
+          </div>
+
+          <button type="submit" class="submit-review">Submit Review</button>
+        </form>
+      </div>
+      {{else}}
+      <div class="review-login-prompt">
+        <p>Please <a href="/auth/login">sign in</a> to leave a review</p>
+      </div>
+      {{/if}}
+
+      <div class="reviews-list">
+        {{#if book.reviews.length}}
+        {{#each book.reviews}}
+        <div class="review-item" data-review-id="{{this._id}}">
+          <div class="review-header">
+            <div class="reviewer-info">
+              <span class="reviewer-name">{{this.userName}}</span>
+              <span class="review-date">{{formatDate this.createdAt}}</span>
+            </div>
+            <div class="review-rating">
+              {{#times this.rating}}★{{/times}}
+            </div>
+            {{#if ../user.isAdmin}}
+            <button class="delete-review-btn" onclick="deleteReview('{{this._id}}')">Delete</button>
+            {{/if}}
+          </div>
+          <div class="review-comment">{{this.comment}}</div>
+        </div>
+        {{/each}}
+        {{else}}
+        <div class="no-reviews">
+          <p>No reviews yet. Be the first to review!</p>
+        </div>
+        {{/if}}
+      </div>
+    </div>
+    <script src="/js/book-details.js"></script>
+  </div>
+</body>
+</html>

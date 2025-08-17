@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - BookNest</title>
+    <link rel="stylesheet" href="/css/profile.css">
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="avatar-section">
+                <img src="{{user.avatar}}" alt="{{user.username}}'s profile picture" class="avatar" id="userAvatar">
+                <button class="avatar-upload" aria-label="Change profile photo">Change Photo</button>
+                <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+            </div>
+            
+            <div class="user-info">
+                <h1>{{user.username}}</h1>
+                <div class="user-email">{{user.email}}</div>
+                <div class="user-bio">{{user.bio}}</div>
+                
+                <div class="user-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">{{reviews.length}}</div>
+                        <div class="stat-label">Reviews</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">{{user.joinDate}}</div>
+                        <div class="stat-label">Member Since</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="profile-tabs" role="tablist">
+            <button class="tab-button active" id="reviews-tab-btn" role="tab" aria-selected="true" aria-controls="reviews-tab">
+                My Reviews
+            </button>
+        </div>
+        
+        <div id="reviews-tab" class="tab-content active" role="tabpanel" aria-labelledby="reviews-tab-btn">
+            {{#if reviews.length}}
+                <div class="reviews-grid">
+                    {{#each reviews}}
+                    <div class="review-card" data-review-id="{{_id}}">
+                        <div class="review-header">
+                            <div class="review-book-info">
+                                <img src="{{book.coverUrl}}" alt="Cover of {{book.title}}" class="review-book-cover">
+                                <div class="review-book-details">
+                                    <h4 class="book-title">{{book.title}}</h4>
+                                    <div class="review-book-author">by {{book.author}}</div>
+                                </div>
+                            </div>
+                            <div class="review-actions">
+                                <button class="edit-review-btn">✏️ Edit</button>
+                                <button class="delete-review-btn">🗑️ Delete</button>
+                            </div>
+                        </div>
+                        
+                        <div class="review-rating">
+                            {{#times rating}}★{{/times}}{{#times (subtract 5 rating)}}☆{{/times}}
+                            <span style="color: #6b7280; margin-left: 0.5rem;">({{rating}}/5)</span>
+                        </div>
+                        
+                        <div class="review-comment">{{comment}}</div>
+                        
+                        <div class="review-date">
+                            {{date}}
+                            {{#if isEdited}}<span style="color: #667eea;">(edited)</span>{{/if}}
+                        </div>
+                        
+                        <div class="review-edit-form" id="edit-form-{{_id}}" style="display: none;">
+                             <form onsubmit="event.preventDefault();">
+                                <div class="form-group">
+                                    <label>Rating:</label>
+                                    <div class="rating-input">
+                                        <input type="radio" name="edit-rating-{{_id}}" value="1" {{#if (eq rating 1)}}checked{{/if}}><label>1</label>
+                                        <input type="radio" name="edit-rating-{{_id}}" value="2" {{#if (eq rating 2)}}checked{{/if}}><label>2</label>
+                                        <input type="radio" name="edit-rating-{{_id}}" value="3" {{#if (eq rating 3)}}checked{{/if}}><label>3</label>
+                                        <input type="radio" name="edit-rating-{{_id}}" value="4" {{#if (eq rating 4)}}checked{{/if}}><label>4</label>
+                                        <input type="radio" name="edit-rating-{{_id}}" value="5" {{#if (eq rating 5)}}checked{{/if}}><label>5</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Comment:</label>
+                                    <textarea name="edit-comment-{{_id}}" rows="3">{{comment}}</textarea>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" class="save-btn">Save Changes</button>
+                                    <button type="button" class="cancel-btn">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+            {{else}}
+                <div class="no-content">
+                    <h3>No reviews yet</h3>
+                    <p>Start reviewing books to see them here!</p>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+    <script src="/js/user-profile.js"></script>
+</body>
+</html>

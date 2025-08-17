@@ -16,18 +16,18 @@ bookRoutes.get('/:id', async (req, res) => {
     const booksCollection = db.collection('books');
     const reviewsCollection = db.collection('reviews');
 
-    const book = await booksCollection.findOne({ 
-      _id: new ObjectId(bookId) 
+    const book = await booksCollection.findOne({
+      _id: new ObjectId(bookId)
     });
     const author = await authors.findAuthor(book.author);
     const authorId = author.length > 0 ? author[0]._id : null;
-    
+
     if (!book) {
       return res.status(404).send('Book not found');
     }
 
-    const reviews = await reviewsCollection.find({ 
-      bookId: new ObjectId(bookId) 
+    const reviews = await reviewsCollection.find({
+      bookId: new ObjectId(bookId)
     }).sort({ createdAt: -1 }).toArray();
 
     res.render('bookDetails', {
@@ -53,14 +53,12 @@ bookRoutes.post('/:id/reviews', async (req, res) => {
   try {
     const bookId = req.params.id;
     const { userId, userName, rating, comment } = req.body;
-    
     if (!ObjectId.isValid(bookId)) {
       return res.status(400).json({ error: 'Invalid book ID' });
     }
     if (!userId || !userName || !rating || !comment) {
       return res.status(400).json({ error: 'All fields are required' });
     }
-
     const db = await dbConnection();
     const reviewsCollection = db.collection('reviews');
     const booksCollection = db.collection('books');
@@ -77,22 +75,21 @@ bookRoutes.post('/:id/reviews', async (req, res) => {
     const insertResult = await reviewsCollection.insertOne(newReview);
     const insertedReview = { ...newReview, _id: insertResult.insertedId };
 
-    const bookReviews = await reviewsCollection.find({ 
-      bookId: new ObjectId(bookId) 
+    const bookReviews = await reviewsCollection.find({
+      bookId: new ObjectId(bookId)
     }).toArray();
-    
+
     const totalRating = bookReviews.reduce((sum, review) => sum + review.rating, 0);
-    const avgRating = bookReviews.length > 0 
-      ? (totalRating / bookReviews.length).toFixed(1) 
+    const avgRating = bookReviews.length > 0
+      ? (totalRating / bookReviews.length).toFixed(1)
       : 0;
 
     await booksCollection.updateOne(
       { _id: new ObjectId(bookId) },
       { $set: { rating: parseFloat(avgRating) } }
     );
-
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       review: {
         ...insertedReview,
         _id: insertedReview._id.toString()
@@ -107,7 +104,7 @@ bookRoutes.post('/:id/reviews', async (req, res) => {
 bookRoutes.delete('/:bookId/reviews/:reviewId', async (req, res) => {
   try {
     const { bookId, reviewId } = req.params;
-    
+
     if (!ObjectId.isValid(bookId) || !ObjectId.isValid(reviewId)) {
       return res.status(400).json({ error: 'Invalid ID format' });
     }
@@ -116,21 +113,21 @@ bookRoutes.delete('/:bookId/reviews/:reviewId', async (req, res) => {
     const reviewsCollection = db.collection('reviews');
     const booksCollection = db.collection('books');
 
-    const deleteResult = await reviewsCollection.deleteOne({ 
-      _id: new ObjectId(reviewId) 
+    const deleteResult = await reviewsCollection.deleteOne({
+      _id: new ObjectId(reviewId)
     });
-    
+
     if (deleteResult.deletedCount === 0) {
       return res.status(404).json({ error: 'Review not found' });
     }
 
-    const bookReviews = await reviewsCollection.find({ 
-      bookId: new ObjectId(bookId) 
+    const bookReviews = await reviewsCollection.find({
+      bookId: new ObjectId(bookId)
     }).toArray();
-    
+
     const totalRating = bookReviews.reduce((sum, r) => sum + r.rating, 0);
-    const avgRating = bookReviews.length > 0 
-      ? (totalRating / bookReviews.length).toFixed(1) 
+    const avgRating = bookReviews.length > 0
+      ? (totalRating / bookReviews.length).toFixed(1)
       : 0;
 
     await booksCollection.updateOne(

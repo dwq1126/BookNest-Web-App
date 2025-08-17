@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Manage Books</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header-bar">
+      <h2>Manage Books</h2>
+      <button class="btn btn-primary" onclick="showAddBookModal()">
+        <i class="fas fa-plus"></i> Add New Book
+      </button>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Publication Date</th>
+            <th>Genres</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="bookList">
+          {{#each books}}
+          <tr data-id="{{_id}}">
+            <td>{{title}}</td>
+            <td>{{author}}</td>
+            <td>{{publication_date}}</td>
+            <td>{{genres}}</td>
+            <td class="actions">
+             <button class="btn-edit"   onclick="editBook('{{_id}}')">Edit</button>
+             <button class="btn-delete" onclick="deleteBook('{{_id}}')">Delete</button>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="editBookModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit Book</h3>
+        <button class="close-modal" onclick="closeEditModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="editBookForm">
+          <input type="hidden" id="editBookId" name="id">
+          
+          <div class="form-group">
+            <label for="editTitle">Title</label>
+            <input type="text" id="editTitle" name="title" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editAuthor">Author</label>
+            <input type="text" id="editAuthor" name="author" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editIntroduction">Introduction</label>
+            <textarea id="editIntroduction" name="introduction" class="form-control" rows="3" required></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="editPublicationDate">Publication Date</label>
+            <input type="date" id="editPublicationDate" name="publication_date" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editISBN">ISBN</label>
+            <input type="text" id="editISBN" name="ISBN" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editGenres">Genres (comma separated)</label>
+            <input type="text" id="editGenres" name="genres" class="form-control" required>
+          </div>
+          
+          <div class="form-actions">
+            <button type="button" class="btn btn-cancel" onclick="closeEditModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+<div id="addBookModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">Add New Book</h3>
+      <button class="close-modal" onclick="closeAddModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="addBookForm">
+        <div class="form-group">
+          <label for="addTitle">Title</label>
+          <input type="text" id="addTitle" name="title" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="addAuthor">Author</label>
+          <input type="text" id="addAuthor" name="author" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="addIntroduction">Introduction</label>
+          <textarea id="addIntroduction" name="introduction" class="form-control" rows="3" required></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="addPublicationDate">Publication Date</label>
+          <input type="date" id="addPublicationDate" name="publication_date" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="addISBN">ISBN</label>
+          <input type="text" id="addISBN" name="ISBN" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="addGenres">Genres (comma separated)</label>
+          <input type="text" id="addGenres" name="genres" class="form-control" required>
+        </div>
+        
+        <div class="form-actions">
+          <button type="button" class="btn btn-cancel" onclick="closeAddModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Book</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+  <script>
+      async function editBook(bookId) {
+  try {
+    const response = await fetch(`/admin/books/${bookId}`);
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+    }
+    
+    const bookData = await response.json();
+    
+    document.getElementById('editBookId').value = bookData._id;
+    document.getElementById('editTitle').value = bookData.title;
+    document.getElementById('editAuthor').value = bookData.author;
+    document.getElementById('editIntroduction').value = bookData.introduction;
+    document.getElementById('editPublicationDate').value = formatDateForInput(bookData.publication_date);
+    document.getElementById('editISBN').value = bookData.ISBN;
+    document.getElementById('editGenres').value = Array.isArray(bookData.genres) ? 
+      bookData.genres.join(', ') : bookData.genres;
+    
+    document.getElementById('editBookModal').style.display = 'flex';
+  } catch (error) {
+    console.error('Error fetching book details:', error);
+    alert('Failed to load book details: ' + error.message);
+  }
+}
+    
+    function closeEditModal() {
+      document.getElementById('editBookModal').style.display = 'none';
+    }
+    
+
+    function formatDateForInput(dateString) {
+      const date = new Date(dateString);
+      if (isNaN(date)) return '';
+      
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      
+      return `${year}-${month}-${day}`;
+    }
+    
+    document.getElementById('editBookForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const bookId = document.getElementById('editBookId').value;
+      const formData = {
+        title: document.getElementById('editTitle').value,
+        author: document.getElementById('editAuthor').value,
+        introduction: document.getElementById('editIntroduction').value,
+        publication_date: document.getElementById('editPublicationDate').value,
+        ISBN: document.getElementById('editISBN').value,
+        genres: document.getElementById('editGenres').value
+      };
+      
+      try {
+        const response = await fetch(`/admin/books/${bookId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          alert('Book updated successfully!');
+          closeEditModal();
+          window.location.reload();
+        } else {
+          alert('Failed to update book: ' + (result.error || 'Unknown error'));
+        }
+      } catch (error) {
+        console.error('Update error:', error);
+        alert('Failed to update book. Please try again.');
+      }
+    });
+
+    async function deleteBook(bookId) {
+      if (confirm('Are you sure you want to delete this book?')) {
+        try {
+          const response = await fetch(`/admin/books/${bookId}`, {
+            method: 'DELETE'
+          });
+          
+          const result = await response.json();
+          
+          if (result.success) {
+            alert('Book deleted successfully!');
+            window.location.reload();
+          } else {
+            alert('Failed to delete book: ' + (result.error || 'Unknown error'));
+          }
+        } catch (error) {
+          console.error('Delete error:', error);
+          alert('Failed to delete book. Please try again.');
+        }
+      }
+    }
+    
+function showAddBookModal() {
+  document.getElementById('addBookModal').style.display = 'flex';
+}
+
+function closeAddModal() {
+  document.getElementById('addBookModal').style.display = 'none';
+}
+
+
+document.getElementById('addBookForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const formData = {
+    title: document.getElementById('addTitle').value,
+    author: document.getElementById('addAuthor').value,
+    introduction: document.getElementById('addIntroduction').value,
+    publication_date: document.getElementById('addPublicationDate').value,
+    ISBN: document.getElementById('addISBN').value,
+    genres: document.getElementById('addGenres').value
+  };
+  
+  try {
+    const response = await fetch('/admin/books', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      alert('Book added successfully!');
+      closeAddModal();
+      window.location.reload();
+    } else {
+      alert('Failed to add book: ' + (result.error || 'Unknown error'));
+    }
+  } catch (error) {
+    console.error('Add book error:', error);
+    alert('Failed to add book. Please try again.');
+  }
+});
+
+window.onclick = function(event) {
+  const editModal = document.getElementById('editBookModal');
+  const addModal = document.getElementById('addBookModal');
+  
+  if (event.target === editModal) {
+    closeEditModal();
+  }
+  if (event.target === addModal) {
+    closeAddModal();
+  }
+};
+    
+    window.onclick = function(event) {
+      const modal = document.getElementById('editBookModal');
+      if (event.target === modal) {
+        closeEditModal();
+      }
+    };
+  </script>
+</body>
+</html>

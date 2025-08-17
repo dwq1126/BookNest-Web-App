@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Authors</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header-bar">
+      <h2>Manage Authors</h2>
+      <button class="btn btn-primary" onclick="showAddAuthorModal()">
+        <i class="fas fa-plus"></i> Add New Author
+      </button>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Nationality</th>
+            <th>Birth Date</th>
+            <th>Works</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="authorList">
+          {{#each authors}}
+            <tr data-id="{{encodeURIComponent _id}}">
+              <td>{{name}}</td>
+              <td>{{nationality}}</td>
+              <td>{{birth_date}}</td>
+              <td>{{works}}</td>
+              <td class="actions">
+                <button class="btn-edit" onclick="editAuthor('{{_id}}')">Edit</button>
+                <button class="btn-delete" onclick="deleteAuthor('{{_id}}')">Delete</button>
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="editAuthorModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit Author</h3>
+        <button class="close-modal" onclick="closeEditModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="editAuthorForm">
+          <input type="hidden" id="editAuthorId" name="id">
+          
+          <div class="form-group">
+            <label for="editName">Name</label>
+            <input type="text" id="editName" name="name" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editBirthDate">Birth Date</label>
+            <input type="date" id="editBirthDate" name="birth_date" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editDeathDate">Death Date (Optional)</label>
+            <input type="date" id="editDeathDate" name="death_date" class="form-control">
+          </div>
+          
+          <div class="form-group">
+            <label for="editNationality">Nationality</label>
+            <input type="text" id="editNationality" name="nationality" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editBiography">Biography</label>
+            <textarea id="editBiography" name="biography" class="form-control" rows="4" required></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="editWorks">Works (comma separated)</label>
+            <input type="text" id="editWorks" name="works" class="form-control">
+          </div>
+          
+          <div class="form-group">
+            <label for="editAwards">Awards (comma separated)</label>
+            <input type="text" id="editAwards" name="awards" class="form-control">
+          </div>
+          
+          <div class="form-actions">
+            <button type="button" class="btn btn-cancel" onclick="closeEditModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="addAuthorModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Add New Author</h3>
+        <button class="close-modal" onclick="closeAddModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="addAuthorForm">
+          <div class="form-group">
+            <label for="addName">Name</label>
+            <input type="text" id="addName" name="name" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="addBirthDate">Birth Date</label>
+            <input type="date" id="addBirthDate" name="birth_date" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="addDeathDate">Death Date (Optional)</label>
+            <input type="date" id="addDeathDate" name="death_date" class="form-control">
+          </div>
+          
+          <div class="form-group">
+            <label for="addNationality">Nationality</label>
+            <input type="text" id="addNationality" name="nationality" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="addBiography">Biography</label>
+            <textarea id="addBiography" name="biography" class="form-control" rows="4" required></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="addWorks">Works (comma separated)</label>
+            <input type="text" id="addWorks" name="works" class="form-control">
+          </div>
+          
+          <div class="form-group">
+            <label for="addAwards">Awards (comma separated)</label>
+            <input type="text" id="addAwards" name="awards" class="form-control">
+          </div>
+          
+          <div class="form-actions">
+            <button type="button" class="btn btn-cancel" onclick="closeAddModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Add Author</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/admin-authors.js"></script>
+</body>
+</html>
